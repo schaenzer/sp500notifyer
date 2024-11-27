@@ -1,17 +1,13 @@
 import argparse
 import configparser
-import datetime
+import logging
+import pathlib
 import tempfile
 
 import requests
 import yfinance as yf
 from matplotlib import pyplot as plt
-import logging
-import pathlib
 
-
-TODAY = datetime.date.today()
-LASTYEAR = datetime.date.today() - datetime.timedelta(days=900)
 
 def map_value_to_emoji(value):
     if value > 0.025:
@@ -41,7 +37,7 @@ def distance(row, base, value):
 
 def get_dataframe_for_symbol(symbol: str):
     ticker = yf.Ticker(symbol)
-    stock_data = ticker.history(start=LASTYEAR, end=TODAY)
+    stock_data = ticker.history(period="1y")
 
     stock_data["SMA200"] = stock_data["Close"].rolling(window=200).mean()
     stock_data["SMA100"] = stock_data["Close"].rolling(window=100).mean()
