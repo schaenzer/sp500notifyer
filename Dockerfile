@@ -25,3 +25,5 @@ COPY --from=builder --chown=app:app /app/.venv /app/.venv
 
 # Run the application
 CMD ["/app/.venv/bin/sp500notifyer"]
+
+USER nobody
