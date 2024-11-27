@@ -6,6 +6,9 @@ import tempfile
 import requests
 import yfinance as yf
 from matplotlib import pyplot as plt
+import logging
+import pathlib
+
 
 TODAY = datetime.date.today()
 LASTYEAR = datetime.date.today() - datetime.timedelta(days=900)
@@ -104,7 +107,7 @@ def generate_image(dataframe, temp_image_file):
 
 def main():
     args = _parse_args()
-    config = _load_config(args.config)
+    config = _load_config(args.config.resolve())
 
     gspc = get_dataframe_for_symbol("^GSPC")
     ndx = get_dataframe_for_symbol("^NDX")
@@ -130,11 +133,16 @@ def main():
 
 def _parse_args():
     parser = argparse.ArgumentParser(description='Send stock market analysis to pushover')
-    parser.add_argument('-c', '--config', type=str, default='config.ini', help='path to config file')
+    parser.add_argument('-c', '--config', type=pathlib.Path, default='config.ini', help='path to config file')
     return parser.parse_args()
 
 def _load_config(config_file):
     config = configparser.ConfigParser()
+    if not config_file.is_file():
+        logging.error(f'Config file {config_file} not found')
+        raise SystemExit(f'Config file {config_file} not found')
+
+    logging.info(f'Loading config from {config_file}')
     config.read(config_file)
     return config
 
