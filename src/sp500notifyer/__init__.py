@@ -1,6 +1,7 @@
 import argparse
 import configparser
 import datetime
+import tempfile
 
 import requests
 import yfinance as yf
@@ -72,7 +73,7 @@ def generate_message(last_gspc, last_ndx, last_gdaxi):
 
     return message
 
-def send_message(message, pushover_user, pushover_token):
+def send_message(message, temp_image_file, pushover_user, pushover_token):
     data = {
         "user": pushover_user,
         "token": pushover_token,
@@ -82,12 +83,12 @@ def send_message(message, pushover_user, pushover_token):
     }
     print(data)
 
-    files = {'attachment': open('gspc.png','rb')}
+    files = {'attachment': temp_image_file}
 
     response = requests.post("https://api.pushover.net:443/1/messages.json", data=data, files=files)
     response.raise_for_status()
 
-def generate_image(dataframe):
+def generate_image(dataframe, temp_image_file):
 
     dataframe[["Close", "SMA200", "SMA100"]].plot()
 
@@ -97,7 +98,8 @@ def generate_image(dataframe):
     plt.gca().spines['right'].set_visible(False)
     plt.gca().spines['left'].set_visible(False)
     plt.grid()
-    plt.savefig("gspc.png")
+    plt.savefig(temp_image_file, format="png")
+    temp_image_file.seek(0)
 
 
 def main():
@@ -108,19 +110,22 @@ def main():
     ndx = get_dataframe_for_symbol("^NDX")
     gdaxi = get_dataframe_for_symbol("^GDAXI")
 
-    generate_image(gspc.tail(65))
+    with tempfile.TemporaryFile() as temp_image_file:
 
-    last_gspc = gspc.iloc[-1]
-    last_ndx = ndx.iloc[-1]
-    last_gdaxi = gdaxi.iloc[-1]
+        generate_image(gspc.tail(65), temp_image_file)
 
-    message = generate_message(last_gspc=last_gspc, last_ndx=last_ndx, last_gdaxi=last_gdaxi)
+        last_gspc = gspc.iloc[-1]
+        last_ndx = ndx.iloc[-1]
+        last_gdaxi = gdaxi.iloc[-1]
 
-    send_message(
-        message,
-        pushover_user=config.get("pushover", "user"),
-        pushover_token=config.get("pushover", "token")
-    )
+        message = generate_message(last_gspc=last_gspc, last_ndx=last_ndx, last_gdaxi=last_gdaxi)
+
+        send_message(
+            message,
+            temp_image_file,
+            pushover_user=config.get("pushover", "user"),
+            pushover_token=config.get("pushover", "token")
+        )
 
 
 def _parse_args():
