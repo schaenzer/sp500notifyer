@@ -1,6 +1,6 @@
 # S&P 500 Notifyer
 
-Simple script which generates a report with buy and sell signals for the 200D SMA strategy on the 2x leveraged S&P 500. Stock market data is retrieved from [Yahoo Finance](https://finance.yahoo.com). The report is sent via [Pushover](https://pushover.net/).
+Simple script which generates a report with buy and sell signals for the 200D SMA strategy on the 2x leveraged S&P 500. Stock market data is retrieved from [Yahoo Finance](https://finance.yahoo.com). The report is sent via [Pushover](https://pushover.net/). The script itself does not do any scheduling and must be executed via something like CRON.
 
 ![screenshot of report](./docs/image.png)
 
