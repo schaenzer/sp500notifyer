@@ -1,0 +1,27 @@
+{% macro value_to_color(value) -%}
+{% if value > 0.025 %}
+#4CAE2F
+{%- elif value > 0 %}
+#FFCC00
+{%- else %}
+#FF0000
+{%- endif %}
+{% endmacro %}
+{% set main_symbol_distance_sma200 = symbols[0]["data"].iloc[-1]["Distance SMA200"] %}
+{% if main_symbol_distance_sma200 > 0.025 %}
+🟩 <b><font color="#4CAE2F">Buy</font></b>
+{% elif main_symbol_distance_sma200 > 0 %}
+🟨 <b><font color="#FFCC00">Buy</font></b>
+{% else %}
+🟥 <b><font color="#FF0000">Sell</font></b>
+{% endif %}
+
+{% for symbol in symbols %}
+<b>{{ symbol["name"] }}</b>
+Close: {{ '%0.2f'| format(symbol["data"].iloc[-1]["Close"]) }}
+{% for window in sma_windows %}
+{% set sma_window_name = "SMA" + (window|string) %}
+{{ sma_window_name }}: {{ '%0.2f'| format(symbol["data"].iloc[-1][sma_window_name]) }} <b><font color="{{ value_to_color(symbol["data"].iloc[-1]["Distance " + sma_window_name]) }}">{{ '%0.2f'| format(symbol["data"].iloc[-1]["Distance " + sma_window_name] * 100) }}%</font></b>
+{% endfor %}
+
+{% endfor %}

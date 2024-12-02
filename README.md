@@ -8,8 +8,25 @@ Simple script which generates a report with buy and sell signals for the 200D SM
 
 The simplest option is to run the script via docker.
 
-Create a `config.ini` file containing the credentials (token, user) for pushover:
+Create a `config.ini` file with credentials (token, user) for pushover:
 ```ini
+[reporting]
+history_period = 1y
+sma_windows = 100, 200
+datapoints_for_graph = 45
+
+[main_symbol]
+name = S&P 500
+symbol = ^GSPC
+
+[aux_symbol:ndx]
+name = NASDAQ 100
+symbol = ^NDX
+
+[aux_symbol:gdaxi]
+name = DAX
+symbol = ^GDAXI
+
 [pushover]
 token = ***
 user = ***

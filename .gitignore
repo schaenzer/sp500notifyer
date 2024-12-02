@@ -10,3 +10,5 @@ wheels/
 .venv
 config.ini
 pod.yaml
+
+.DS_Store

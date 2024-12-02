@@ -1,0 +1,20 @@
+[reporting]
+history_period = 1y
+sma_windows = 100, 200
+datapoints_for_graph = 45
+
+[main_symbol]
+name = S&P 500
+symbol = ^GSPC
+
+[aux_symbol:ndx]
+name = NASDAQ 100
+symbol = ^NDX
+
+[aux_symbol:gdaxi]
+name = DAX
+symbol = ^GDAXI
+
+[pushover]
+token = ***
+user = ***
