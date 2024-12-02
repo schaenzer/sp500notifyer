@@ -26,4 +26,6 @@ COPY --from=builder --chown=app:app /app/.venv /app/.venv
 # Run the application
 ENTRYPOINT ["/app/.venv/bin/sp500notifyer"]
 
+ENV MPLCONFIGDIR=/tmp/matplotlib
+
 USER nobody
