@@ -1,5 +1,5 @@
 # Install uv
-FROM python:3.12-slim AS builder
+FROM python:3.13-slim AS builder
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # Change the working directory to the `app` directory
@@ -18,7 +18,7 @@ ADD . /app
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-editable --compile-bytecode
 
-FROM python:3.12-slim
+FROM python:3.13-slim
 
 # Copy the environment, but not the source code
 COPY --from=builder --chown=app:app /app/.venv /app/.venv
